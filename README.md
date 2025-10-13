@@ -268,4 +268,131 @@ The day's lab focused on observing the practical characteristics of the NMOS tra
     * **Left-click** on the desired point in the SPICE output GUI (Figure 3).
     * The terminal output will display the coordinates $x_0$ and $y_0$.
     * The **$y_0$ value** corresponds directly to the **drain current ($I_D$)** in Amperes at that specific operating point.
+# NgspiceSky130 – Day 2
+## **Velocity saturation and basics of CMOS inverter VTC**
+
+On the second day of the workshop, we explored advanced concepts of MOSFET device physics and their impact on circuit behavior. Through SPICE simulations, we observed the characteristics of long-channel and short-channel devices, focusing on the effect of velocity saturation at different electric fields. In addition, the operation of MOSFETs as switches and the fundamentals of CMOS inverters were introduced, including their voltage transfer characteristics (VTC).
+
+---
+
+### **Part 1: SPICE Simulation for Lower Nodes and Velocity Saturation Effect**
+
+This section explores how scaling down the transistor dimensions (lower nodes) affects the $\boldsymbol{I_D}$ vs $\boldsymbol{V_{DS}}$ characteristics, specifically due to the **Velocity Saturation effect**.
+
+#### **1. Long Channel vs. Short Channel Operation Modes**
+
+The regions of operation change with channel length, requiring a unified model that incorporates the **Velocity Saturation** regime for modern devices. We define the effective gate voltage as $\boldsymbol{V_{GT} = V_{GS} - V_T}$.
+
+| Operation Modes | Long Channel ($>250\text{nm}$) | Short Channel ($<250\text{nm}$) |
+| :--- | :---: | :---: |
+| **Cutoff** | Cutoff | Cutoff |
+| **Resistive (Linear)** | Resistive | Resistive |
+| **Velocity Saturation** | - | Velocity Saturation |
+| **Saturation** | Saturation | Saturation |
+
+* **Cutoff Mode:** $\boldsymbol{I_D = 0}$ for $V_{GT} < 0$.
+
+#### **2. Unified Drain Current Model for Short Channels**
+
+A single model can be used to describe the current in the Resistive, Velocity Saturation, and Saturation modes by defining a minimum voltage term ($\boldsymbol{V_{\min}}$). This model inherently accounts for velocity saturation through the technology parameter $\boldsymbol{V_{dsat}}$ (Saturation voltage).
+
+The general drain current equation for the conducting modes is:
+
+$$I_D = k_n \cdot \left[ (V_{GT} \cdot V_{\min}) - \frac{V_{\min}^2}{2} \right] \cdot [1 + \lambda V_{DS}]$$
+
+Where:
+* $k_n = \mu_n C_{ox} (W/L)$ (Gain factor)
+* $V_{GT} = V_{GS} - V_T$
+* $V_{dsat}$ is a **Technology Parameter** (Saturation voltage where device velocity saturates, independent of $V_{GS}$ or $V_{DS}$).
+
+The term $\boldsymbol{V_{\min}}$ is the minimum of the three voltages, which dictates the effective voltage drop across the conducting part of the channel:
+
+$$\boldsymbol{V_{\min} = \min(V_{GT}, V_{DS}, V_{dsat})}$$
+
+**Example using $V_{\min}$:**
+* **Resistive Mode:** If $V_{DS}$ is small (i.e., $V_{\min} \approx V_{DS}$), the equation simplifies toward the classic quadratic linear current equation.
+* **Velocity Saturation Mode:** If $V_{dsat}$ is the minimum value (i.e., $V_{\min} = V_{dsat}$), the equation models the saturated current limit:
+    $$I_D = k_n \cdot \left[ (V_{GT} \cdot V_{dsat}) - \frac{V_{dsat}^2}{2} \right] \cdot [1 + \lambda V_{DS}]$$
+* **Saturation Mode (Ideal Long Channel):** If $V_{GT}$ is the minimum value (i.e., $V_{\min} = V_{GT}$), and we ignore $\lambda$ and $V_{dsat}$, the equation simplifies toward the ideal quadratic saturation current equation.
+
+#### **3. Velocity Saturation Mechanism**
+
+As channel lengths decrease (becoming **short channel** devices), the electric field ($E$) in the channel increases significantly, leading to the **Velocity Saturation effect**.
+
+* **Relationship:** Velocity ($v$) and electric field ($E$) are related by the equation $v = \mu E$.
+* **Saturation:** Carrier velocity increases linearly with $E$ only up to a certain critical electric field ($\mathcal{E}_c$). Beyond $\mathcal{E}_c$, the velocity ceases to increase linearly and **saturates** due to **scattering effects**, causing the carrier mobility ($\mu$) to decrease.
+* **Impact:** Velocity saturation tends to limit the peak current early. Consequently, the **saturation current for lower nodes is often lower** than predicted by the long-channel model.
+
+---
+
+### **Part 2: Day 2 Lab Activities – SPICE Simulation for Short-Channel Devices**
+
+This lab focused on using SPICE to characterize a short-channel NMOS device (Sky130 $\boldsymbol{L=0.15\mu}$, $\boldsymbol{W=0.39\mu}$) to demonstrate velocity saturation and extract the threshold voltage ($V_T$).
+
+#### **1. Lab 2A: $\boldsymbol{I_{DS}}$ vs $\boldsymbol{V_{DS}}$ Sweep (Velocity Saturation)**
+
+**Purpose:** To generate the characteristic $I_{DS}$ vs $V_{DS}$ curves for various gate voltages and observe the transition from quadratic to linear behavior due to velocity saturation.
+
+### **Lab 2B: I_DS vs V_GS Sweep (Threshold Voltage Extraction)**
+
+**Purpose:** To calculate the **Threshold Voltage (V_T)** of a short-channel NMOS transistor (L=0.15u, W=0.39u).
+
+**Procedure (SPICE Netlist):**
+This code holds the drain voltage (V_DS) constant at 1.8V (forcing saturation) and sweeps the gate voltage (V_GS) to obtain the I_DS vs V_GS curve.
+
+### **CMOS Inverter & Voltage Transfer Characteristic (VTC)**
+
+The final part of Day 2 introduces the fundamental building block of digital logic: the CMOS inverter, and analyzes its **Voltage Transfer Characteristic (VTC)**.
+
+#### **1. MOSFET as a Switch**
+
+A MOSFET acts as a voltage-controlled switch:
+* **OFF State (Open Circuit):** Occurs when $|\boldsymbol{V_{GS}}| < |\boldsymbol{V_T}|$.
+* **ON State (Closed Circuit):** Occurs when $|\boldsymbol{V_{GS}}| > |\boldsymbol{V_T}|$.
+
+#### **2. CMOS Inverter Operation**
+
+The CMOS inverter uses an NMOS (pull-down) and a PMOS (pull-up) transistor to ensure one is always ON while the other is OFF in the static state:
+
+| Case | Input ($V_{IN}$) | PMOS (Pull-up) | NMOS (Pull-down) | Output ($V_{OUT}$) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Case 1** | $V_{DD}$ (High) | OFF | ON (Closed) | $\approx 0\text{V}$ |
+| **Case 2** | $0\text{V}$ (Low) | ON (Closed) | OFF | $\approx V_{DD}$ |
+
+**Voltage Relationships:**
+* $V_{gsN} = V_{IN}$
+* $V_{gsP} = V_{IN} - V_{DD}$
+* $V_{dsN} = V_{OUT}$
+* $V_{dsP} = V_{OUT} - V_{DD}$
+* $I_{dsP} = -I_{dsN}$
+
+#### **3. Five Regions of the CMOS VTC**
+
+The VTC plot shows $V_{OUT}$ vs $V_{IN}$. It is derived by finding the operating points where the NMOS load curve and the PMOS load curve intersect ($|I_{dsN}| = |I_{dsP}|$).
+
+| Region | Input ($V_{IN}$) | NMOS Mode | PMOS Mode | Output ($V_{OUT}$) |
+| :--- | :---: | :---: | :---: | :---: |
+| **1** | $V_{IN} \approx 0$ | Cut-Off (OFF) | Linear | $V_{OUT} = V_{DD}$ |
+| **2** | Low | Saturation | Linear | High |
+| **3 (Transition)**| $V_{IN} \approx V_M$ | Saturation | Saturation | Switching |
+| **4** | High | Linear | Saturation | Low |
+| **5** | $V_{IN} \approx V_{DD}$ | Linear | Cut-Off (OFF) | $V_{OUT} = 0\text{V}$ |
+
+***
+
+### **Explanation of CMOS Inverter Operation and VTC Regions**
+
+* **Regions 1 & 5 (Static States):** These are the stable output states where static power consumption is minimized because only one transistor is **ON**.
+    * **Region 1** ($V_{IN} \approx 0$): PMOS is strongly **ON (Linear)**, pulling $V_{OUT}$ to $V_{DD}$. NMOS is **OFF**.
+    * **Region 5** ($V_{IN} \approx V_{DD}$): NMOS is strongly **ON (Linear)**, pulling $V_{OUT}$ to $0\text{V}$. PMOS is **OFF**.
+
+* **Regions 2 & 4 (Transition Sides):** These are the high-current transition periods.
+    * In **Region 2**, NMOS is in **Saturation** (max current), actively pulling down, while PMOS is still in the **Linear** region (resistive).
+    * In **Region 4**, PMOS is in **Saturation** (max current), actively pulling up, while NMOS is in the **Linear** region.
+
+* **Region 3 (Switching Threshold – $\boldsymbol{V_M}$):** This is the high-gain region where the output switches rapidly.
+    * At this point, the input voltage is $\boldsymbol{V_M}$.
+    * **Both NMOS and PMOS are simultaneously in the Saturation region** ($\boldsymbol{I_{DSN} = -I_{DSP}}$).
+    * The steep slope confirms the **robust logic levels** and excellent **noise margin** of the CMOS inverter.
+
 
