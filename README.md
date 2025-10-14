@@ -260,7 +260,12 @@ The day's lab focused on observing the practical characteristics of the NMOS tra
 * **Analysis:** The **`.dc` analysis** command was used to sweep both the drain voltage ($V_{ds}$) and the gate voltage ($V_{gs}$) to observe the NMOS drain current ($I_D$) behavior across the linear and saturation regions.
 * **Process Variation:** It was noted that **process corner variation** ($tt \to ff \to ss$) significantly changes fundamental device parameters, namely **drive current** and **Threshold Voltage ($V_t$)**.
 
+ <img width="954" height="897" alt="Id_Vs_Vds code" src="https://github.com/user-attachments/assets/f3bc90ff-0925-4b5a-8e38-ebae54dde505" /> 
+
 ### **Output Observation and Data Extraction**
+
+
+<img width="954" height="897" alt="Id Vs Vds" src="https://github.com/user-attachments/assets/189efd6c-bc23-43a3-8359-b59a7a7b5d04" />
 
 * **Practical Characteristics:** The simulation curves provided a direct observation of the practical transistor characteristics ($I_D$ vs $V_{DS}$ curves for different $V_{GS}$ values).
 * **Node Definition:** Nodes in SPICE are defined by the connection points specified in the netlist.
@@ -333,12 +338,22 @@ This lab focused on using SPICE to characterize a short-channel NMOS device (Sky
 
 **Purpose:** To generate the characteristic $I_{DS}$ vs $V_{DS}$ curves for various gate voltages and observe the transition from quadratic to linear behavior due to velocity saturation.
 
+<img width="954" height="897" alt="day2-ss1 1" src="https://github.com/user-attachments/assets/06c360f6-7e5b-461b-8933-fccc5b650860" />
+
+<img width="954" height="897" alt="day2-1 2" src="https://github.com/user-attachments/assets/26d59242-b4c0-4f68-a98a-2db02da98c7a" />
+
+
 ### **Lab 2B: I_DS vs V_GS Sweep (Threshold Voltage Extraction)**
 
 **Purpose:** To calculate the **Threshold Voltage (V_T)** of a short-channel NMOS transistor (L=0.15u, W=0.39u).
 
 **Procedure (SPICE Netlist):**
 This code holds the drain voltage (V_DS) constant at 1.8V (forcing saturation) and sweeps the gate voltage (V_GS) to obtain the I_DS vs V_GS curve.
+
+<img width="954" height="897" alt="2-Id_Vs_Vgs code" src="https://github.com/user-attachments/assets/affc5912-27b4-4042-9a4f-139aac4cea2c" />
+
+<img width="954" height="897" alt="2-Id Vs Vgs" src="https://github.com/user-attachments/assets/7b6e32bd-711b-4184-9361-02415f263c22" />
+The Threshold voltage of the short channel NMOS transistor is [ADD Value].
 
 ### **CMOS Inverter & Voltage Transfer Characteristic (VTC)**
 
@@ -460,6 +475,7 @@ The switching threshold $V_M$ is the input voltage where the inverter switches, 
 ```
 V_{IN} = V_{OUT} = V_M
 ```
+<img width="954" height="897" alt="3-tran_analys" src="https://github.com/user-attachments/assets/db336425-1658-48cd-b0a0-0da7e68c3759" />
 
 **Critical State:**  
 At $V_M$, both NMOS and PMOS are simultaneously in the Saturation region ($\boldsymbol{I_{DSN} = -I_{DSP}}$).
@@ -508,6 +524,7 @@ Delays are measured at the 50% transition point (e.g., $0.9\text{V}$).
   ```
   Rise Delay = t_{output,50\%}^{rising} - t_{input,50\%}^{falling}
   ```
+
 
   **Lab Value:**  
   $\text{Rise Delay} = \text{[FILL IN RISE END TIME]} - \text{[FILL IN RISE START TIME]} = \text{[FILL IN RISE DELAY] ns}$
