@@ -395,4 +395,394 @@ The VTC plot shows $V_{OUT}$ vs $V_{IN}$. It is derived by finding the operating
     * **Both NMOS and PMOS are simultaneously in the Saturation region** ($\boldsymbol{I_{DSN} = -I_{DSP}}$).
     * The steep slope confirms the **robust logic levels** and excellent **noise margin** of the CMOS inverter.
 
+# NgspiceSky130 – Day 3
+## **CMOS Switching Threshold and Dynamic Simulations**
 
+Day 3 focuses on the **CMOS Inverter** characterization, covering static behavior (VTC and Switching Threshold $V_M$) and dynamic behavior (Rise and Fall Delay) through SPICE simulation and analytical modeling.
+
+---
+
+### **Voltage Transfer Characteristics – SPICE Simulations**
+
+The **SPICE Deck** is the crucial input file for simulating the inverter's static response.
+
+#### **1. SPICE Deck Creation for CMOS Inverter (VTC)**
+
+The circuit defines a CMOS inverter with an output load capacitor ($C_{load}$), driven by $V_{DD}$ and swept by $V_{IN}$.
+
+**Netlist Breakdown for VTC Simulation (DC Sweep):**
+
+```spice
+* MODEL Descriptions - Load technology file
+.LIB "path/to/models.mod" CMOS_MODELS
+
+* Voltage Sources (Example: VDD = 2.5V)
+Vdd vdd 0 2.5
+Vin in 0 2.5
+
+* Netlist Description (DGSS syntax: Drain, Gate, Source, Substrate)
+* M1: PMOS (Example Sizing)
+M1 out in vdd vdd pmos W=0.375u L=0.25u
+* M2: NMOS
+M2 out in 0 0 nmos W=0.375u L=0.25u
+* Load Capacitor
+Cload out 0 10f
+
+* Simulation Commands
+.op
+* DC Sweep: Vin sweeps from 0V to 2.5V in 0.05V steps
+.dc Vin 0 2.5 0.05
+.end
+```
+
+VTC Simulation:
+The .dc command sweeps the input voltage ($\boldsymbol{V_{IN}}$) to generate the Voltage Transfer Characteristic (VTC) plot ($\boldsymbol{V_{OUT}}$ vs $\boldsymbol{V_{IN}}$).
+
+**2. Effect of Transistor Sizing on VTC (Lab Observations)**
+
+Simulating inverters with different $\boldsymbol{W/L}$ ratios confirms the robustness of the CMOS structure.
+The following was observed in the lab when varying PMOS width:
+
+**Observation 1 (Robustness):**
+The fundamental shape of the VTC remains the same, demonstrating the inverter's robustness against fabrication variations in size.
+
+**Observation 2 (Shifting $V_M$):**
+Increasing the PMOS width makes the PMOS stronger, causing the $\boldsymbol{V_M}$ (Switching Threshold) to shift toward $V_{DD}$ (higher $V_{IN}$).
+
+---
+
+### Static Behavior Evaluation – CMOS Inverter Robustness – Switching Threshold ($\boldsymbol{V_M}$)
+
+**1. Definition of Switching Threshold ($\boldsymbol{V_M}$)**
+
+The switching threshold $V_M$ is the input voltage where the inverter switches, defined by the condition:
+
+```
+V_{IN} = V_{OUT} = V_M
+```
+
+**Critical State:**  
+At $V_M$, both NMOS and PMOS are simultaneously in the Saturation region ($\boldsymbol{I_{DSN} = -I_{DSP}}$).
+
+**2. Analytical Expression and Design**
+
+$V_M$ is analytically determined by equating the saturation currents:
+
+```
+V_M = f\left(\frac{W}{L}_p, \frac{W}{L}_n, \mu_n, \mu_p, V_{TN}, V_{TP}\right)
+```
+
+**Designing for Symmetry:**  
+To achieve ideal Symmetry ($V_M \approx V_{DD}/2$), the $\boldsymbol{PMOS}$ must be made wider than the $\boldsymbol{NMOS}$ to compensate for the lower mobility of holes ($\mu_p$).
+
+---
+
+### Transient Analysis and Dynamic Simulation
+
+Transient Analysis (.tran) is a time-domain simulation used to find the dynamic characteristics of the inverter, specifically its delay times.
+
+**1. SPICE Deck for Transient Analysis**
+
+The input source ($V_{IN}$) is defined as a PULSE function to simulate a switching event.
+
+```spice
+* Vdd is a static source
+Vdd vdd 0 1.8V
+* Vin is a transient pulse (Example: 0V to 1.8V, Trise/Tfall = 0.1ns)
+Vin in 0 PULSE(0 1.8 0n 0.1n 0.1n 2n 4n) 
+
+* ... (Netlist remains the same) ...
+
+* Simulation Commands
+.tran 0.01n 10n * Run simulation for 10ns with a 0.01n step
+.end
+```
+
+**2. Delay Measurement and Calculation**
+
+Delays are measured at the 50% transition point (e.g., $0.9\text{V}$).
+
+- **Rise Delay ($\boldsymbol{t_{r}}$):**  
+  Time required to charge the output capacitor ($C_{LOAD}$), primarily determined by PMOS width.
+
+  ```
+  Rise Delay = t_{output,50\%}^{rising} - t_{input,50\%}^{falling}
+  ```
+
+  **Lab Value:**  
+  $\text{Rise Delay} = \text{[FILL IN RISE END TIME]} - \text{[FILL IN RISE START TIME]} = \text{[FILL IN RISE DELAY] ns}$
+
+- **Fall Delay ($\boldsymbol{t_{f}}$):**  
+  Time required to discharge the output capacitor ($C_{LOAD}$), primarily determined by NMOS width.
+
+  ```
+  Fall Delay = t_{output,50\%}^{falling} - t_{input,50\%}^{rising}
+  ```
+
+  **Lab Value:**  
+  $\text{Fall Delay} = \text{[FILL IN FALL END TIME]} - \text{[FILL IN FALL START TIME]} = \text{[FILL IN FALL DELAY] ns}$
+
+**3. Key Conclusion: Delay Symmetry**
+
+Symmetry is Achieved when the $\boldsymbol{W_P/L_P}$ ratio is tuned such that Rise Delay ≈ Fall Delay.
+
+This balanced characteristic is critical for Clock Inverters/Buffers and is a fundamental requirement in Static Timing Analysis (STA).
+
+# NgspiceSky130 – Day 4
+## CMOS Noise Margin Robustness Evaluation
+
+Day 4 focuses on evaluating the static robustness of the CMOS inverter, primarily through the calculation and analysis of Noise Margins ($NM_H$ and $NM_L$).
+
+---
+
+### Static Behaviour Evaluation – CMOS Inverter Robustness – Noise Margin
+
+#### 1. Introduction to Noise Margin
+
+Noise Margin is a measure of how much unwanted electrical noise a logic circuit can tolerate on its input without causing an incorrect output state. It is a critical metric for the reliability of digital systems.
+
+While an ideal inverter has an infinite slope, practical inverters have a finite slope due to parasitics, which necessitates defining precise voltage boundaries.
+
+#### 2. Noise Margin Voltage Parameters
+
+The VTC curve defines four critical voltage points that demarcate valid logic regions and noise tolerance:
+
+| Parameter | Definition | Logic State |
+|-----------|------------|-------------|
+| $V_{OH}$  | Output High Voltage: Minimum output voltage guaranteed to be a logic HIGH (ideally $V_{DD}$). | Valid Logic '1' |
+| $V_{OL}$  | Output Low Voltage: Maximum output voltage guaranteed to be a logic LOW (ideally 0V). | Valid Logic '0' |
+| $V_{IH}$  | Input High Voltage: Minimum input voltage recognized as a logic HIGH. | Start of Transition |
+| $V_{IL}$  | Input Low Voltage: Maximum input voltage recognized as a logic LOW. | End of Transition |
+
+**Critical Points:** $V_{IL}$ and $V_{IH}$ are typically defined as the points on the VTC where the slope ($\frac{dV_{OUT}}{dV_{IN}}$) equals $-1$.
+
+#### 3. Noise Margin Equations
+
+Noise margin is the buffer zone between the output voltage of one gate and the valid input voltage required by the next gate.
+
+- **Noise Margin High ($NM_H$):** The noise tolerance when the input is meant to be a logic '1'.
+
+  $$
+  NM_H = V_{OH} - V_{IH}
+  $$
+
+- **Noise Margin Low ($NM_L$):** The noise tolerance when the input is meant to be a logic '0'.
+
+  $$
+  NM_L = V_{IL} - V_{OL}
+  $$
+
+**Conclusion:**  
+A larger noise margin implies a more robust CMOS inverter that is more immune to noise disturbances. Any signal outside these margins is considered "Undefined."
+
+---
+
+#### 4. SPICE Simulation for Noise Margin Calculation (Lab Activity)
+
+The VTC curve is generated using a DC sweep, and the critical points ($V_{IL}$, $V_{IH}$) are extracted where the slope is $-1$.
+
+**SPICE Netlist for Noise Margin Simulation:**
+```spice
+* Model Description
+.param temp=27
+
+* Including sky130 library files
+.lib "sky130_fd_pr/models/sky130.lib.spice" tt
+
+* Netlist Description (Example W/L ratio used for noise margin testing)
+* XM1 (PMOS) W=1u, L=0.15u
+XM1 out in vdd vdd sky130_fd_pr__pfet_01v8 w=1u l=0.15u
+* XM2 (NMOS) W=0.36u, L=0.15u
+XM2 out in 0 0 sky130_fd_pr__nfet_01v8 w=0.36u l=0.15u
+
+Cload out 0 50fF
+
+Vdd vdd 0 1.8V
+Vin in 0 1.8V
+
+* Simulation Commands
+.op
+* DC Sweep Vin from 0 to 1.8V with a fine step of 0.01V
+.dc Vin 0 1.8 0.01
+
+.control
+run
+setplot dc1
+display
+.endc
+
+.end
+```
+
+---
+
+#### 5. Noise Margin Calculation (Lab Results)
+
+After running the simulation and extracting the critical points ($V_{OH}$, $V_{OL}$, $V_{IH}$, $V_{IL}$):
+
+| Parameter | Extracted Value |
+|-----------|----------------|
+| $V_{OH}$  | [FILL IN V_{OH} VALUE] V |
+| $V_{OL}$  | [FILL IN V_{OL} VALUE] V |
+| $V_{IH}$  | [FILL IN V_{IH} VALUE] V |
+| $V_{IL}$  | [FILL IN V_{IL} VALUE] V |
+
+- **Noise Margin High ($NM_H$):**
+
+  $$
+  NM_H = V_{OH} - V_{IH} = \text{[CALCULATED NM_H VALUE]} \text{ V}
+  $$
+
+- **Noise Margin Low ($NM_L$):**
+
+  $$
+  NM_L = V_{IL} - V_{OL} = \text{[CALCULATED NM_L VALUE]} \text{ V}
+  $$
+
+---
+
+#### 6. Conclusion on Robustness
+
+**CMOS Robustness:**  
+The CMOS inverter is highly robust to noise. As demonstrated in earlier labs, even when PMOS sizing is significantly increased, the noise margins tend to remain static or change only minimally, preserving the integrity of the digital signal.
+
+**Balance:**  
+When $NM_H \approx NM_L$ (achieved through proper PMOS/NMOS sizing, typically $W_P/L_P \approx 2-3 \times W_N/L_N$), the inverter exhibits optimal balance and noise immunity.
+# NgspiceSky130 – Day 5
+## CMOS Power Supply and Device Variation Robustness Evaluation
+
+Day 5 addresses two critical sources of non-ideality in manufacturing and operation: the impact of scaling the supply voltage ($V_{DD}$) and the effect of process-induced device variations on CMOS inverter robustness.
+
+---
+
+### Static Behavior Evaluation – CMOS Inverter Robustness: Power Supply Variation
+
+As technology scales (e.g., from 250nm to 20nm), the supply voltage is reduced (e.g., 1.8V→0.7V) to reduce power consumption. This trade-off significantly impacts the VTC.
+
+#### 1. Supply Voltage Scaling Trade-offs
+
+| Scaling Effect | Advantages (Low $V_{DD}$, e.g., 0.5V) | Disadvantages (Low $V_{DD}$) |
+|----------------|--------------------------------------|-------------------------------|
+| Gain           | Gain increases (e.g., ∼50% increase observed). | Transition slope becomes gentler. |
+| Power          | Energy consumption reduces significantly (∼90% reduction). | Performance suffers: Rising/falling edges are slower. |
+| Robustness     | - | Noise Margins ($NM_H$, $NM_L$) shrink, reducing robustness. |
+
+#### 2. SPICE Simulation for Supply Variation (Lab Code)
+
+A smart SPICE simulation uses a dowhile loop in the `.control` block to sweep the supply voltage ($V_{DD}$) across several values for a single netlist definition.
+
+**SPICE Netlist for $V_{DD}$ Sweep:**
+```spice
+* Model Description
+.param temp=27
+
+* Including sky130 library files
+.lib "sky130_fd_pr/models/sky130.lib.spice" tt
+
+* Netlist Description
+XM1 out in vdd vdd sky130_fd_pr__pfet_01v8 w=1u l=0.15u
+XM2 out in 0 0 sky130_fd_pr__nfet_01v8 w=0.36u l=0.15u
+
+Cload out 0 50fF
+
+* Initial Supply Voltage (Altered in loop)
+Vdd vdd 0 1.8V
+Vin in 0 1.8V
+
+.control
+let powersupply = 1.8
+alter Vdd = powersupply
+        let voltagesupplyvariation = 0
+        dowhile voltagesupplyvariation < 6
+        dc Vin 0 1.8 0.01
+        let powersupply = powersupply - 0.2
+        alter Vdd = powersupply
+        let voltagesupplyvariation = voltagesupplyvariation + 1
+      end
+
+plot dc1.out vs in dc2.out vs in dc3.out vs in dc4.out vs in dc5.out vs in dc6.out vs in xlabel "input voltage(V)" ylabel "output voltage(V)" title "Inveter dc characteristics as a function of supply voltage"
+
+.endc
+
+.end
+```
+*Figure 21: Snapshot of output window to observe power supply variations*
+
+#### 3. Inverter Gain Calculation (Lab Procedure)
+
+Inverter gain ($g$) is calculated near the switching point ($V_{M}$), where the slope is steepest:
+
+$$
+\text{Gain (g)} = \frac{\Delta V_{IN}}{\Delta V_{OUT}}
+$$
+
+**Observation:**  
+As $V_{DD}$ decreases, the VTC transition becomes smoother, and the overall robustness diminishes, showing the trade-off between power efficiency and circuit stability.
+
+---
+
+### Static Behavior Evaluation – CMOS Inverter Robustness: Device Variation
+
+In real fabrication, device parameters are never perfectly ideal due to manufacturing processes.
+
+#### 1. Sources of Device Variation
+
+- **Etching Process Variation:** Errors in the photolithography and etching steps lead to variations in the drawn Width (W) and Length (L) of the transistor gate. Since $I_D \propto W/L$, this directly impacts drive current and delay.
+- **Oxide Thickness Variation ($t_{ox}$):** Small variations in the gate oxide thickness during fabrication significantly affect the gate capacitance ($C_{ox} = \epsilon_{ox} / t_{ox}$), which in turn alters the Threshold Voltage ($V_T$) and drive current.
+
+#### 2. Imbalanced Device Strengths
+
+Device variations or intentional non-symmetrical sizing create imbalances that shift the VTC:
+
+| Device Imbalance             | $V_M$ Shift                 | Performance Effect                     | Robustness Effect                  |
+|------------------------------|-----------------------------|----------------------------------------|------------------------------------|
+| Strong NMOS / Weak PMOS      | Shifts Downward (towards 0V) | Output falls faster than it rises.     | $NM_H$ reduces; $NM_L$ improves.   |
+| Strong PMOS / Weak NMOS      | Shifts Upward (towards $V_{DD}$) | Output rises faster than it falls.     | $NM_L$ reduces; $NM_H$ improves.   |
+
+#### 3. SPICE Simulation for Device Variation (Lab Code)
+
+The following simulation tests the Strong PMOS / Weak NMOS case by setting a large $W_P/W_N$ ratio (e.g., 7/0.42≈16.7).
+
+**SPICE Netlist for Device Variation Sweep:**
+```spice
+* Model Description
+.param temp=27
+
+* Including sky130 library files
+.lib "sky130_fd_pr/models/sky130.lib.spice" tt
+
+* Netlist Description (Strong PMOS: W=7u, Weak NMOS: W=0.42u)
+XM1 out in vdd vdd sky130_fd_pr__pfet_01v8 w=7u l=0.15u
+XM2 out in 0 0 sky130_fd_pr__nfet_01v8 w=0.42u l=0.15u
+
+Cload out 0 50fF
+
+Vdd vdd 0 1.8V
+Vin in 0 1.8V
+
+* Simulation Commands
+.op
+.dc Vin 0 1.8 0.01
+
+.control
+run
+setplot dc1
+display
+.endc
+
+.end
+```
+*Figure 22: Snapshot of output window to observe device variations*
+
+#### 4. Switching Threshold Observation (Lab Result)
+
+The VTC plot for the strong PMOS case shifts right. By finding the point where $V_{IN} \approx V_{OUT}$ (zooming in the GUI):
+
+**Example Result:**  
+$V_M \approx$ [FILL IN Vm VALUE] V.
+
+---
+
+### Conclusion
+
+The shifting $V_M$ confirms the strength imbalance, where the stronger device (PMOS) requires the input to be closer to $V_{DD}$ to be overcome by the weaker device (NMOS).
