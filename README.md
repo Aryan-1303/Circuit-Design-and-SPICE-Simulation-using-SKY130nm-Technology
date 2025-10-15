@@ -339,9 +339,10 @@ This lab focused on using SPICE to characterize a short-channel NMOS device (Sky
 **Purpose:** To generate the characteristic $I_{DS}$ vs $V_{DS}$ curves for various gate voltages and observe the transition from quadratic to linear behavior due to velocity saturation.
 
 <img width="954" height="897" alt="day2-ss1 1" src="https://github.com/user-attachments/assets/06c360f6-7e5b-461b-8933-fccc5b650860" />
+Code setup for Lab
 
 <img width="954" height="897" alt="day2-1 2" src="https://github.com/user-attachments/assets/26d59242-b4c0-4f68-a98a-2db02da98c7a" />
-
+Id Vs Vds
 
 ### **Lab 2B: I_DS vs V_GS Sweep (Threshold Voltage Extraction)**
 
@@ -351,9 +352,14 @@ This lab focused on using SPICE to characterize a short-channel NMOS device (Sky
 This code holds the drain voltage (V_DS) constant at 1.8V (forcing saturation) and sweeps the gate voltage (V_GS) to obtain the I_DS vs V_GS curve.
 
 <img width="954" height="897" alt="2-Id_Vs_Vgs code" src="https://github.com/user-attachments/assets/affc5912-27b4-4042-9a4f-139aac4cea2c" />
-
+Code setup for Lab
 <img width="954" height="897" alt="2-Id Vs Vgs" src="https://github.com/user-attachments/assets/7b6e32bd-711b-4184-9361-02415f263c22" />
-The Threshold voltage of the short channel NMOS transistor is [ADD Value].
+Id Vs Vgs plot
+
+<img width="954" height="897" alt="threshold voltage" src="https://github.com/user-attachments/assets/0f4b4500-0ce8-4898-b2bd-681c1b610035" />
+Threshold Voltage Value
+
+The Threshold voltage of the short channel NMOS transistor is 0.766 V.
 
 ### **CMOS Inverter & Voltage Transfer Characteristic (VTC)**
 
@@ -475,7 +481,8 @@ The switching threshold $V_M$ is the input voltage where the inverter switches, 
 ```
 V_{IN} = V_{OUT} = V_M
 ```
-<img width="954" height="897" alt="3-tran_analys" src="https://github.com/user-attachments/assets/db336425-1658-48cd-b0a0-0da7e68c3759" />
+<img width="954" height="897" alt="noise m" src="https://github.com/user-attachments/assets/7c033992-1a22-421e-9c98-38e16c1ff7e7" />
+CMOS switching
 
 **Critical State:**  
 At $V_M$, both NMOS and PMOS are simultaneously in the Saturation region ($\boldsymbol{I_{DSN} = -I_{DSP}}$).
@@ -513,6 +520,8 @@ Vin in 0 PULSE(0 1.8 0n 0.1n 0.1n 2n 4n)
 .tran 0.01n 10n * Run simulation for 10ns with a 0.01n step
 .end
 ```
+<img width="954" height="897" alt="3-tran_analys" src="https://github.com/user-attachments/assets/db336425-1658-48cd-b0a0-0da7e68c3759" />
+Transient analysis
 
 **2. Delay Measurement and Calculation**
 
@@ -525,9 +534,11 @@ Delays are measured at the 50% transition point (e.g., $0.9\text{V}$).
   Rise Delay = t_{output,50\%}^{rising} - t_{input,50\%}^{falling}
   ```
 
+<img width="954" height="897" alt="rise delay calc" src="https://github.com/user-attachments/assets/f3c08b51-a413-4b82-91df-bea8b0bc49ed" />
+Rise Delay Values for calculation
 
   **Lab Value:**  
-  $\text{Rise Delay} = \text{[FILL IN RISE END TIME]} - \text{[FILL IN RISE START TIME]} = \text{[FILL IN RISE DELAY] ns}$
+  $\text{Rise Delay} = \text{2.46269} - \text{2.12687} = \text{0.33582 ns}$
 
 - **Fall Delay ($\boldsymbol{t_{f}}$):**  
   Time required to discharge the output capacitor ($C_{LOAD}$), primarily determined by NMOS width.
@@ -535,9 +546,11 @@ Delays are measured at the 50% transition point (e.g., $0.9\text{V}$).
   ```
   Fall Delay = t_{output,50\%}^{falling} - t_{input,50\%}^{rising}
   ```
+<img width="954" height="897" alt="fall delay" src="https://github.com/user-attachments/assets/5e308b06-0686-4217-aad9-8a26bb6bbbe5" />
+Fall Delay Values for calculation
 
   **Lab Value:**  
-  $\text{Fall Delay} = \text{[FILL IN FALL END TIME]} - \text{[FILL IN FALL START TIME]} = \text{[FILL IN FALL DELAY] ns}$
+  $\text{Fall Delay} = \text{4.3333} - \text{4.04872} = \text{0.28458 ns}$
 
 **3. Key Conclusion: Delay Symmetry**
 
@@ -630,32 +643,34 @@ display
 
 .end
 ```
+<img width="954" height="897" alt="noise m" src="https://github.com/user-attachments/assets/78c75ecc-4013-41e7-9c81-a677e837eb06" />
 
 ---
 
 #### 5. Noise Margin Calculation (Lab Results)
+<img width="954" height="897" alt="x=vih,y=vol" src="https://github.com/user-attachments/assets/d173ad96-9a08-473c-aaaa-1c7486f6e8ce" />
+
+<img width="954" height="897" alt="y=voh,x=vil" src="https://github.com/user-attachments/assets/bb2eb316-8e65-402a-900b-28bdf5ee1b43" />
+
 
 After running the simulation and extracting the critical points ($V_{OH}$, $V_{OL}$, $V_{IH}$, $V_{IL}$):
 
 | Parameter | Extracted Value |
 |-----------|----------------|
-| $V_{OH}$  | [FILL IN V_{OH} VALUE] V |
-| $V_{OL}$  | [FILL IN V_{OL} VALUE] V |
-| $V_{IH}$  | [FILL IN V_{IH} VALUE] V |
-| $V_{IL}$  | [FILL IN V_{IL} VALUE] V |
+| $V_{OH}$  | 1.74615 V |
+| $V_{OL}$  | 0.107692 V |
+| $V_{IH}$  | 0.975 V |
+| $V_{IL}$  | 0.735 V |
 
 - **Noise Margin High ($NM_H$):**
 
-  $$
-  NM_H = V_{OH} - V_{IH} = \text{[CALCULATED NM_H VALUE]} \text{ V}
-  $$
+  NM_H = V_{OH} - V_{IH} = 0.77115 V
+  
 
 - **Noise Margin Low ($NM_L$):**
 
-  $$
-  NM_L = V_{IL} - V_{OL} = \text{[CALCULATED NM_L VALUE]} \text{ V}
-  $$
-
+  NM_L = V_{IL} - V_{OL} = 0.6273 V
+  
 ---
 
 #### 6. Conclusion on Robustness
@@ -723,19 +738,57 @@ plot dc1.out vs in dc2.out vs in dc3.out vs in dc4.out vs in dc5.out vs in dc6.o
 
 .end
 ```
+<img width="954" height="897" alt="vtc supply variation" src="https://github.com/user-attachments/assets/cc0de879-f32e-4495-9360-ea03d55e6b9d" />
+
+
 *Figure 21: Snapshot of output window to observe power supply variations*
 
 #### 3. Inverter Gain Calculation (Lab Procedure)
 
 Inverter gain ($g$) is calculated near the switching point ($V_{M}$), where the slope is steepest:
 
+<img width="954" height="897" alt="gain margin 1 8v" src="https://github.com/user-attachments/assets/b7eaa604-f6ed-491e-b61a-c7edeaf42cde" />
+Values of gain margin for VDD value 1.8 V 
+
+<img width="954" height="897" alt="gain margin 1 6v" src="https://github.com/user-attachments/assets/660adcb1-acb9-496c-9713-60d5cc6fe1a5" />
+Values of gain margin for VDD value 1.6 V
+
+<img width="954" height="897" alt="gainmargin 1 2v" src="https://github.com/user-attachments/assets/5424000b-9751-43b9-9292-001467a1a3c7" />
+Values of gain margin for VDD value 1.2 V
+
+<img width="954" height="897" alt="gainmargin 1v" src="https://github.com/user-attachments/assets/c68f13c6-1127-4ae7-bf9f-672392881304" />
+Values of gain margin for VDD value 1 V
+
+<img width="954" height="897" alt="gainmargin 0 8v" src="https://github.com/user-attachments/assets/fdba6a1c-a90e-4788-9f71-eb6fbd4da009" />
+Values of gain margin for VDD value 0.8 V
 $$
 \text{Gain (g)} = \frac{\Delta V_{IN}}{\Delta V_{OUT}}
 $$
+**Gain Calculation Table for Various $V_{DD}$ Values**
+
+| $V_{DD}$ (V) | $Delta V_{IN}$ at $V_M$ (V) | $Delta V_{OUT}$ at $V_M$ (V) | Gain ($g$) |
+|--------------|-----------------------|------------------------|------------|
+| 1.8          |        -0.2675 V    |    1.0615 V         | |  -6.211 |
+| 1.6          |       -0.21 V    |   1.5103 V        | -7.1919|
+| 1.2          |        -0.135 V   | 1.16392 V            | -8.621|
+| 1.0          |         -0.1225 V   | 0.9666 V           | -7.8906|
+| 0.8          |          -0.12 V |   0.7692 V          | -6.4103 |
+
 
 **Observation:**  
 As $V_{DD}$ decreases, the VTC transition becomes smoother, and the overall robustness diminishes, showing the trade-off between power efficiency and circuit stability.
+We can also see that the gain varies with the value of VDD -
+- **Gain Increase ($V_{DD} = 1.8\,V \to 1.2\,V$):**
+  - **VTC Compression:** Reducing $V_{DD}$ narrows the total voltage swing, forcing the VTC transition to become steeper over the input range.
+  - **Effective Magnification:** The output voltage change ($\Delta V_{OUT}$) is magnified relative to the small input change ($\Delta V_{IN}$) required to switch the transistors, thus increasing the gain ($g$).
 
+- **Peak Gain ($V_{DD} \approx 1.2\,V$):**
+  - **Optimal Bias Point:** The inverter operates at an optimal bias point where the transistors have maximized their transconductance ($g_m$) relative to their output resistance ($r_o$) before low-voltage limitations become severe.
+
+- **Gain Decrease ($V_{DD} = 1.0\,V \to 0.8\,V$):**
+  - **Reduced Overdrive:** The supply voltage approaches the device threshold voltage ($V_T$), severely limiting the transistors' overdrive ($V_{GS} - V_T$).
+  - **Current Loss:** The current drive capability is drastically reduced, causing the transition to stretch out and become less sharp.
+  - **Smooth Transition:** The VTC slope becomes less steep (smoother), directly resulting in a lower gain ($g$). This loss of gain directly corresponds to a loss of noise immunity and performance.
 ---
 
 ### Static Behavior Evaluation – CMOS Inverter Robustness: Device Variation
@@ -789,17 +842,17 @@ display
 
 .end
 ```
+<img width="1062" height="897" alt="vtc device variation" src="https://github.com/user-attachments/assets/be16fd7e-5ff1-4382-b8bb-195378b8e110" />
+ 
 *Figure 22: Snapshot of output window to observe device variations*
 
 #### 4. Switching Threshold Observation (Lab Result)
 
 The VTC plot for the strong PMOS case shifts right. By finding the point where $V_{IN} \approx V_{OUT}$ (zooming in the GUI):
 
-**Example Result:**  
-$V_M \approx$ [FILL IN Vm VALUE] V.
+<img width="1062" height="897" alt="switching th day-5 for device variation" src="https://github.com/user-attachments/assets/492b4da7-b959-4995-8886-d4745a75cff9" />
 
 ---
-
 ### Conclusion
 
 The shifting $V_M$ confirms the strength imbalance, where the stronger device (PMOS) requires the input to be closer to $V_{DD}$ to be overcome by the weaker device (NMOS).
