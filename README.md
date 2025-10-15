@@ -52,10 +52,13 @@ Circuit design involves connecting **PMOS** and **NMOS** transistors in specific
   - Drive current controls **charging/discharging rate of capacitors**  
   - Charging/discharging rate controls **waveform transition**  
   - Waveform transition defines **propagation delay**
-
+<img width="706" height="276" alt="CTS" src="https://github.com/user-attachments/assets/80cf1501-0330-454b-99ce-105503944c6d" />
+    
 - To **select the appropriate W/L ratio** for a required delay or performance, SPICE simulations are used to analyze and tune circuit behavior.
 
-- SPICE simulations help **generate delay tables**:  
+- SPICE simulations help **generate delay tables**:
+  <img width="765" height="383" alt="Delay Tables" src="https://github.com/user-attachments/assets/ec966f05-63f4-4bf7-b252-3811c7f30cdc" />
+                              Delay Table
   - For different **buffers, gates, and cells**, simulations are performed under varying **input slews** and **output loads**.  
   - The **delay value** corresponding to each (input slew, output load) pair is recorded.  
   - These values form the **cell delay tables** used later in **Static Timing Analysis (STA)** and **physical design tools**.
@@ -75,6 +78,8 @@ Circuit design involves connecting **PMOS** and **NMOS** transistors in specific
 The **NMOS transistor** is a 4-terminal device built on a **p-type substrate**. Its structure and terminals are fundamental to its operation:
 
 **Structure and Components:**
+<img width="584" height="496" alt="nmos" src="https://github.com/user-attachments/assets/05175ec6-fd27-4a2c-80e8-5792c3fb5d2b" />
+
 * **Substrate:** p-type silicon body.
 * **Source (S) and Drain (D):** Formed by **n+ diffusion regions** embedded in the p-substrate.
 * **Gate (G):** A **poly-Si or metal layer** placed above a **thin gate oxide** (SiO₂). The gate terminal **drives the NMOS**.
@@ -94,6 +99,7 @@ The **NMOS transistor** is a 4-terminal device built on a **p-type substrate**. 
 ### **NMOS Operation: From Cut-off to Strong Inversion**
 
 The operation of the NMOS transistor is centered on creating a conductive channel between the Source and Drain:
+<img width="1211" height="576" alt="strong inversion" src="https://github.com/user-attachments/assets/43c45444-8e36-402d-a414-29699a710007" />
 
 1.  **Initial Condition (Cut-off):**
     * $V_{gs} = 0$, Drain, Source, and Bulk are grounded.
@@ -119,6 +125,7 @@ The operation of the NMOS transistor is centered on creating a conductive channe
 ### **The Body Effect**
 
 The **Body Effect** describes how the potential of the bulk/body terminal ($V_b$) affects the threshold voltage.
+<img width="755" height="379" alt="Vss +ve" src="https://github.com/user-attachments/assets/7c040a38-4611-4ac7-bef8-618bb4ed4b70" />
 
 * **Case 1: $V_{sb} = 0$** $\to$ Normal inversion and the minimum $V_t$.
 * **Case 2: $V_{sb} > 0$** (Substrate is positively biased relative to the Source):
@@ -141,6 +148,8 @@ Where:
 * $N_A$ = Doping concentration (Acceptor concentration for p-type substrate)
 * $n_i$ = Intrinsic carrier concentration of silicon
 ---
+  <img width="697" height="364" alt="threshold  voltage equation" src="https://github.com/user-attachments/assets/e9b3e2ce-aa95-4322-af39-8c7fe16d5c24" />
+
 
 ## **Part 2: NMOS Resistive region and Saturation region of operation**
 
@@ -169,6 +178,8 @@ This equation can be simplified using the **process transconductance** ($\boldsy
 * $k_n = k'_n \frac{W}{L}$ (Gain Factor, depending on device geometry)
 
 $$I_D = k_n \left[ (V_{GS} - V_{T})V_{DS} - \frac{1}{2}V_{DS}^2 \right]$$
+<img width="802" height="224" alt="drift current -1" src="https://github.com/user-attachments/assets/fd51fd88-b82a-4ac2-badd-3e7276b195c9" />
+<img width="749" height="256" alt="drift current 2" src="https://github.com/user-attachments/assets/70e0aad6-0200-4dea-abb7-69e387ed72f0" />
 
 ### **Region Conditions and Drain Current Equations**
 
@@ -204,11 +215,14 @@ SPICE (Simulation Program with Integrated Circuit Emphasis) is a crucial tool us
 
 ### **SPICE Setup and Simulation Flow**
 
+
 The SPICE process provides a systematic approach from writing netlists to analyzing results. It involves three main steps: **Netlist**, **Model Definition**, and **Simulation Commands**.
 
 #### 1. SPICE Netlist: Circuit Description
 
 The netlist is a text file that describes the circuit topology, components, and connections.
+<img width="1147" height="480" alt="spice -1" src="https://github.com/user-attachments/assets/e56699e2-2671-4bcc-80eb-ecfd5fbfdb4c" />
+<img width="881" height="584" alt="spice nodes" src="https://github.com/user-attachments/assets/7ba113f0-cc7f-4936-82e5-1d451e80f480" />
 
 * **Node Definition:** Terminals in the circuit (Source, Drain, Gate, Substrate, VDD, etc.) are assigned numerical or alphanumeric names (nodes).
 * **Transistor Syntax:** For a MOSFET (e.g., NMOS $M_1$), the standard syntax is:
