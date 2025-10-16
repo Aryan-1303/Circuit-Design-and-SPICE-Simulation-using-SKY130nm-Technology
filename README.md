@@ -529,12 +529,13 @@ At $V_M$, both NMOS and PMOS are simultaneously in the Saturation region ($\bold
 
 **2. Analytical Expression and Design**
 
-$V_M$ is analytically determined by equating the saturation currents:
+The Switching Threshold ($\boldsymbol{V_M}$) is analytically determined by equating the saturation currents of the NMOS and PMOS transistors.
+Analytical Expression and DesignThe analytical expression for $V_M$ shows its dependency on device parameters:
+$$V_M = f\left(\frac{W}{L}_p, \frac{W}{L}_n, \frac{\mu_n}{\mu_p}, V_{TN}, V_{TP}\right)
 
-```
-V_M = f\left(\frac{W}{L}_p, \frac{W}{L}_n, \mu_n, \mu_p, V_{TN}, V_{TP}\right)
-```
-
+$$Where:$\frac{W}{L}_p$ and $\frac{W}{L}_n$ are the width-to-length ratios of the PMOS and NMOS.
+$\frac{\mu_n}{\mu_p}$ is the mobility ratio (electron mobility is typically $2$ to $3$ times higher than hole mobility).
+$V_{TN}$ and $V_{TP}$ are the threshold voltages of the NMOS and PMOS, respectively.
 **Designing for Symmetry:**  
 To achieve ideal Symmetry ($V_M \approx V_{DD}/2$), the $\boldsymbol{PMOS}$ must be made wider than the $\boldsymbol{NMOS}$ to compensate for the lower mobility of holes ($\mu_p$).
 
