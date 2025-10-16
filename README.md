@@ -314,7 +314,9 @@ The regions of operation change with channel length, requiring a unified model t
 #### **2. Unified Drain Current Model for Short Channels**
 
 A single model can be used to describe the current in the Resistive, Velocity Saturation, and Saturation modes by defining a minimum voltage term ($\boldsymbol{V_{\min}}$). This model inherently accounts for velocity saturation through the technology parameter $\boldsymbol{V_{dsat}}$ (Saturation voltage).
+<img width="777" height="381" alt="day-2 vel sat" src="https://github.com/user-attachments/assets/4b981d56-b687-4d15-a1a8-bfbcf8a2e073" />
 
+ 
 The general drain current equation for the conducting modes is:
 
 $$I_D = k_n \cdot \left[ (V_{GT} \cdot V_{\min}) - \frac{V_{\min}^2}{2} \right] \cdot [1 + \lambda V_{DS}]$$
@@ -328,10 +330,15 @@ The term $\boldsymbol{V_{\min}}$ is the minimum of the three voltages, which dic
 
 $$\boldsymbol{V_{\min} = \min(V_{GT}, V_{DS}, V_{dsat})}$$
 
-**Example using $V_{\min}$:**
+
+<img width="756" height="351" alt="var modes" src="https://github.com/user-attachments/assets/2aa4a2ba-33d5-4155-be78-ade4fb617af9" />
+
+**Various Modes of Operation in Mosfet Long Channel and Short Channel**
 * **Resistive Mode:** If $V_{DS}$ is small (i.e., $V_{\min} \approx V_{DS}$), the equation simplifies toward the classic quadratic linear current equation.
 * **Velocity Saturation Mode:** If $V_{dsat}$ is the minimum value (i.e., $V_{\min} = V_{dsat}$), the equation models the saturated current limit:
     $$I_D = k_n \cdot \left[ (V_{GT} \cdot V_{dsat}) - \frac{V_{dsat}^2}{2} \right] \cdot [1 + \lambda V_{DS}]$$
+ 
+
 * **Saturation Mode (Ideal Long Channel):** If $V_{GT}$ is the minimum value (i.e., $V_{\min} = V_{GT}$), and we ignore $\lambda$ and $V_{dsat}$, the equation simplifies toward the ideal quadratic saturation current equation.
 
 #### **3. Velocity Saturation Mechanism**
@@ -340,7 +347,8 @@ As channel lengths decrease (becoming **short channel** devices), the electric f
 
 * **Relationship:** Velocity ($v$) and electric field ($E$) are related by the equation $v = \mu E$.
 * **Saturation:** Carrier velocity increases linearly with $E$ only up to a certain critical electric field ($\mathcal{E}_c$). Beyond $\mathcal{E}_c$, the velocity ceases to increase linearly and **saturates** due to **scattering effects**, causing the carrier mobility ($\mu$) to decrease.
-* **Impact:** Velocity saturation tends to limit the peak current early. Consequently, the **saturation current for lower nodes is often lower** than predicted by the long-channel model.
+* **Observation:** Velocity saturation tends to limit the peak current early. Consequently, the **saturation current for lower nodes is often lower** than predicted by the long-channel model.
+<img width="747" height="350" alt="obv sat current" src="https://github.com/user-attachments/assets/64315b06-0cc7-4f33-b8f4-60c0d4cb1e93" />
 
 ---
 
@@ -382,6 +390,8 @@ The final part of Day 2 introduces the fundamental building block of digital log
 #### **1. MOSFET as a Switch**
 
 A MOSFET acts as a voltage-controlled switch:
+<img width="750" height="419" alt="mos as switch" src="https://github.com/user-attachments/assets/e3a85ef2-8162-4c3f-a584-e10d8156685e" />
+
 * **OFF State (Open Circuit):** Occurs when $|\boldsymbol{V_{GS}}| < |\boldsymbol{V_T}|$.
 * **ON State (Closed Circuit):** Occurs when $|\boldsymbol{V_{GS}}| > |\boldsymbol{V_T}|$.
 
@@ -394,8 +404,11 @@ The CMOS inverter uses an NMOS (pull-down) and a PMOS (pull-up) transistor to en
 | **Case 1** | $V_{DD}$ (High) | OFF | ON (Closed) | $\approx 0\text{V}$ |
 | **Case 2** | $0\text{V}$ (Low) | ON (Closed) | OFF | $\approx V_{DD}$ |
 
-**Voltage Relationships:**
-* $V_{gsN} = V_{IN}$
+**Voltage and Current Relationships:**
+<img width="725" height="620" alt="Drain current Vs Drain voltage" src="https://github.com/user-attachments/assets/1660c3ef-8a3e-4ce6-95de-0d53445caad9" />
+<img width="722" height="374" alt="nmos and pmos curr V volt" src="https://github.com/user-attachments/assets/c3a94ecc-9b9c-46d7-95cc-5a5ba514bb81" />
+
+* $V_{gsN} = V_{IN} - V_{ss}$ = V_{IN}$
 * $V_{gsP} = V_{IN} - V_{DD}$
 * $V_{dsN} = V_{OUT}$
 * $V_{dsP} = V_{OUT} - V_{DD}$
@@ -404,6 +417,10 @@ The CMOS inverter uses an NMOS (pull-down) and a PMOS (pull-up) transistor to en
 #### **3. Five Regions of the CMOS VTC**
 
 The VTC plot shows $V_{OUT}$ vs $V_{IN}$. It is derived by finding the operating points where the NMOS load curve and the PMOS load curve intersect ($|I_{dsN}| = |I_{dsP}|$).
+<img width="737" height="247" alt="load curr pmos & nmos" src="https://github.com/user-attachments/assets/ef5a7048-7c27-4b3a-8f0d-a3152146c01f" />
+<img width="746" height="479" alt="VTC" src="https://github.com/user-attachments/assets/aacb9391-b459-480f-b54f-a2d8613984ac" />
+
+
 
 | Region | Input ($V_{IN}$) | NMOS Mode | PMOS Mode | Output ($V_{OUT}$) |
 | :--- | :---: | :---: | :---: | :---: |
@@ -412,6 +429,8 @@ The VTC plot shows $V_{OUT}$ vs $V_{IN}$. It is derived by finding the operating
 | **3 (Transition)**| $V_{IN} \approx V_M$ | Saturation | Saturation | Switching |
 | **4** | High | Linear | Saturation | Low |
 | **5** | $V_{IN} \approx V_{DD}$ | Linear | Cut-Off (OFF) | $V_{OUT} = 0\text{V}$ |
+
+<img width="290" height="210" alt="VTC graph" src="https://github.com/user-attachments/assets/a526dda3-fa13-4e62-a88b-0d4efac91db9" />
 
 ***
 
@@ -444,6 +463,10 @@ The **SPICE Deck** is the crucial input file for simulating the inverter's stati
 #### **1. SPICE Deck Creation for CMOS Inverter (VTC)**
 
 The circuit defines a CMOS inverter with an output load capacitor ($C_{load}$), driven by $V_{DD}$ and swept by $V_{IN}$.
+<img width="719" height="599" alt="CMOS inv def" src="https://github.com/user-attachments/assets/24d1fb88-7599-4b01-9181-54117a2b0661" />
+CMOS INVERTER MODULE
+<img width="682" height="606" alt="Deck Model CMOS" src="https://github.com/user-attachments/assets/a6337ef9-19c4-405e-a203-6d83e4f6df36" />
+Deck Model of CMOS
 
 **Netlist Breakdown for VTC Simulation (DC Sweep):**
 
@@ -472,6 +495,9 @@ Cload out 0 10f
 
 VTC Simulation:
 The .dc command sweeps the input voltage ($\boldsymbol{V_{IN}}$) to generate the Voltage Transfer Characteristic (VTC) plot ($\boldsymbol{V_{OUT}}$ vs $\boldsymbol{V_{IN}}$).
+
+<img width="770" height="589" alt="sim result" src="https://github.com/user-attachments/assets/dd1370ea-61dd-4c33-8046-035819c886f0" />
+
 
 **2. Effect of Transistor Sizing on VTC (Lab Observations)**
 
@@ -569,6 +595,31 @@ Fall Delay Values for calculation
 **3. Key Conclusion: Delay Symmetry**
 
 Symmetry is Achieved when the $\boldsymbol{W_P/L_P}$ ratio is tuned such that Rise Delay ≈ Fall Delay.
+We will now see the behaviour of CMOS for below difference in W/L ratios of PMOS and NMOS.
+<img width="1152" height="896" alt="ratios" src="https://github.com/user-attachments/assets/957fb0da-7697-4b5d-804c-4b77fff8cc61" />
+-For (W/L)n = (W/L)p = 1
+<img width="707" height="304" alt="w/l ratio 1" src="https://github.com/user-attachments/assets/bf0eeb1c-5b2c-4f97-a9ac-b6e76c301833" />
+
+-For (W/L)p = 2(W/L)n 
+<img width="721" height="314" alt="w/l ratio 2" src="https://github.com/user-attachments/assets/08e42294-b8eb-47dd-9775-3d32eace26aa" />
+
+-For (W/L)p = 3(W/L)n 
+<img width="723" height="311" alt="image" src="https://github.com/user-attachments/assets/7e7550a0-9517-44ca-a62f-e13132791870" />
+
+-For (W/L)p = 4(W/L)n 
+<img width="781" height="320" alt="image" src="https://github.com/user-attachments/assets/30715a82-c8a0-4dfa-8b31-82374b03f7ff" />
+
+-For (W/L)p = 5(W/L)n 
+<img width="788" height="330" alt="image" src="https://github.com/user-attachments/assets/5196ca71-97fb-412f-9fae-c3fb0053f652" />
+**Final Observation Table**
+<img width="762" height="247" alt="table" src="https://github.com/user-attachments/assets/ab973ba5-8073-41e1-a182-172879741675" />
+Using All the Observations,we can draw some conclusions on this :
+-During fabrication, there can be slight variation in sizes of PMOS and NMOS from the required one, but the robustness of CMOS inverter is such that, there is not much difference in the Vm with change in sizes.
+
+-When (W/L)p = 2(W/L)n, we see that RISE-FALL delay are approximately equal, if we simulate then we can get the ratio factor such that the Rise delay and fall delay are equal to each other. This shows "Symmetry" of CMOS inverter.
+
+ A typical characteristic of Clock Inverter/buffer where we want the rise delay and fall delay to be equal.
+ <img width="728" height="436" alt="Clk inv" src="https://github.com/user-attachments/assets/1ebc1d1d-c719-4eaf-8de4-e945df846ab7" />
 
 This balanced characteristic is critical for Clock Inverters/Buffers and is a fundamental requirement in Static Timing Analysis (STA).
 
@@ -585,11 +636,20 @@ Day 4 focuses on evaluating the static robustness of the CMOS inverter, primaril
 
 Noise Margin is a measure of how much unwanted electrical noise a logic circuit can tolerate on its input without causing an incorrect output state. It is a critical metric for the reliability of digital systems.
 
-While an ideal inverter has an infinite slope, practical inverters have a finite slope due to parasitics, which necessitates defining precise voltage boundaries.
+While an ideal inverter has an infinite slope, practical inverters have a finite slope due to parasitics, which necessitates defining precise voltage boundaries.This is due to the presence of resistances and capacitances.
+-Ideal Inverter
+<img width="1120" height="928" alt="Noise ideal" src="https://github.com/user-attachments/assets/e24f5fe9-a472-4011-8997-1c3047d43a03" />
+
+-Practical Inverter
+<img width="515" height="490" alt="Practical inv" src="https://github.com/user-attachments/assets/3b8c11ac-73cf-4009-b34e-b165a8e6329c" />
 
 #### 2. Noise Margin Voltage Parameters
 
 The VTC curve defines four critical voltage points that demarcate valid logic regions and noise tolerance:
+
+<img width="783" height="423" alt="image" src="https://github.com/user-attachments/assets/39bca3fc-db6b-489d-87fe-9a933be35aa5" />
+
+<img width="822" height="481" alt="image" src="https://github.com/user-attachments/assets/5dadb72f-1a40-4e71-9ac0-7f65fa2b40f2" />
 
 | Parameter | Definition | Logic State |
 |-----------|------------|-------------|
@@ -619,6 +679,21 @@ Noise margin is the buffer zone between the output voltage of one gate and the v
 **Conclusion:**  
 A larger noise margin implies a more robust CMOS inverter that is more immune to noise disturbances. Any signal outside these margins is considered "Undefined."
 
+#### Noise margin variation with respect to PMOS width
+We will evaluate the noise margin depending upon the PMOS width and ultimately prove that how CMOS inverter is robust to the noise margins.
+First, we will find the points where the slope = -1 and extend the lines towards x-y axis.
+<img width="1207" height="542" alt="image" src="https://github.com/user-attachments/assets/b08e62b5-6907-42c1-a084-d7ebe1511a20" />
+The larger the Noise margin, stronger is CMOS inverter and immune to Noises.
+<img width="1175" height="523" alt="image" src="https://github.com/user-attachments/assets/38f2a3a0-992b-4e03-9c63-3fa6b5f2a3d3" />
+
+<img width="1197" height="503" alt="image" src="https://github.com/user-attachments/assets/cc960a49-ebe6-48cc-b119-66f05bb7ceaf" />
+
+<img width="1203" height="517" alt="image" src="https://github.com/user-attachments/assets/a10b533e-7822-4acb-890c-269222855a32" />
+
+For (W/L)p=4(W/L)p and (W/L)p=5(W/L)p noise margins are same, so even if we increase the widths further noise margin will be static.
+<img width="677" height="226" alt="image" src="https://github.com/user-attachments/assets/3a3a5f43-4719-4c3c-b3c2-13acc1cc2721" />
+
+Here also we can verify the robustness of CMOS inverter.
 ---
 
 #### 4. SPICE Simulation for Noise Margin Calculation (Lab Activity)
@@ -706,7 +781,18 @@ Day 5 addresses two critical sources of non-ideality in manufacturing and operat
 As technology scales (e.g., from 250nm to 20nm), the supply voltage is reduced (e.g., 1.8V→0.7V) to reduce power consumption. This trade-off significantly impacts the VTC.
 
 #### 1. Supply Voltage Scaling Trade-offs
+ analyse the curves we got in after the simulation and see what are the advantages and disadvantages using low supply voltage.
+The first factor is to check the "Gain" for all the supply voltages. "Gain Factor" is change in the output voltage divided by change in the input voltage.
+<img width="968" height="516" alt="image" src="https://github.com/user-attachments/assets/fad70b46-4771-4368-987f-481e69b3bdf4" />
+<img width="976" height="547" alt="image" src="https://github.com/user-attachments/assets/2188f456-a9e1-43ce-8c1f-41bac55e9319" />
 
+There is energy lowering for low supply voltage.
+<img width="1000" height="526" alt="image" src="https://github.com/user-attachments/assets/de43703c-9bb5-4e05-a0a2-4baddc0ca778" />
+<img width="927" height="527" alt="image" src="https://github.com/user-attachments/assets/1ad2c478-f678-4e65-81ee-cff2d7cf6c0d" />
+
+<img width="722" height="212" alt="image" src="https://github.com/user-attachments/assets/eef8cd67-02bd-4436-a5cd-6a3bb51138fc" />
+
+-Disadvantages of low supply voltage Due to low supply voltage, the charging and discharging of load capacitor becomes very slow, due to this the Both rise delay and fall delay will increase and lead to a performance impact.
 | Scaling Effect | Advantages (Low $V_{DD}$, e.g., 0.5V) | Disadvantages (Low $V_{DD}$) |
 |----------------|--------------------------------------|-------------------------------|
 | Gain           | Gain increases (e.g., ∼50% increase observed). | Transition slope becomes gentler. |
@@ -812,11 +898,46 @@ In real fabrication, device parameters are never perfectly ideal due to manufact
 #### 1. Sources of Device Variation
 
 - **Etching Process Variation:** Errors in the photolithography and etching steps lead to variations in the drawn Width (W) and Length (L) of the transistor gate. Since $I_D \propto W/L$, this directly impacts drive current and delay.
+  <img width="1208" height="580" alt="image" src="https://github.com/user-attachments/assets/21c5fb60-8ef0-4baa-960c-473057fab63e" />
+
+Now considering the inverter chain, the variation can differ with different inverter.
+<img width="1288" height="652" alt="image" src="https://github.com/user-attachments/assets/c5500700-3f99-4186-94c1-3490918b44f4" />
+
+<img width="1121" height="618" alt="image" src="https://github.com/user-attachments/assets/b857d3d0-822b-428f-9783-ecebd1ddb3d4" />
+
+The variation is more at the edges or sides than at the center.
+<img width="1324" height="621" alt="image" src="https://github.com/user-attachments/assets/087e59ef-0147-4fd3-893a-1ee056224643" />
+
+Therefore the variation in L and W can change the drain current of CMOS inverter.
+
+<img width="926" height="483" alt="image" src="https://github.com/user-attachments/assets/8210cc64-7572-4767-82f1-827008086da1" />
+
+
 - **Oxide Thickness Variation ($t_{ox}$):** Small variations in the gate oxide thickness during fabrication significantly affect the gate capacitance ($C_{ox} = \epsilon_{ox} / t_{ox}$), which in turn alters the Threshold Voltage ($V_T$) and drive current.
+<img width="1318" height="561" alt="image" src="https://github.com/user-attachments/assets/f6ff7dcf-a6e9-43cc-9392-6e690e3ce175" />
+
+<img width="826" height="377" alt="image" src="https://github.com/user-attachments/assets/5a3694e9-3b44-40ae-bc7b-aab95d8ba593" />
+
+There is a difference between ideal thickness and actual thickness.
+<img width="1205" height="597" alt="image" src="https://github.com/user-attachments/assets/cb5331a4-af92-42a9-aaf7-f4526041cd89" />
+
+We know Cox=Eox/tox, therefore change in tox can actually change the drain current.
+
+<img width="1162" height="461" alt="image" src="https://github.com/user-attachments/assets/b21a9e39-9241-4584-b542-5f86f75936e3" />
 
 #### 2. Imbalanced Device Strengths
 
 Device variations or intentional non-symmetrical sizing create imbalances that shift the VTC:
+<img width="1148" height="339" alt="image" src="https://github.com/user-attachments/assets/5da904cf-e66e-4115-91ac-f66c6424b976" />
+
+<img width="594" height="436" alt="image" src="https://github.com/user-attachments/assets/7ea7fdab-038c-46af-a92e-ed0f65bb4e44" />
+
+<img width="695" height="398" alt="image" src="https://github.com/user-attachments/assets/17484287-ff7a-4174-8619-ad6c96128bfe" />
+
+<img width="726" height="321" alt="image" src="https://github.com/user-attachments/assets/9d9ba56b-270b-4368-a3e5-93ca740d4191" />
+
+<img width="753" height="567" alt="image" src="https://github.com/user-attachments/assets/0dd99ecf-1d7d-46a8-a8b7-855ef11ba849" />
+
 
 | Device Imbalance             | $V_M$ Shift                 | Performance Effect                     | Robustness Effect                  |
 |------------------------------|-----------------------------|----------------------------------------|------------------------------------|
